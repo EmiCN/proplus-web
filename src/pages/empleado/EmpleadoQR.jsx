@@ -1,33 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 const EmpleadoQR = () => {
   const [qr, setQr] = useState(null);
-  const [cargando, setCargando] = useState(false);
-  const [segundos, setSegundos] = useState(0);
+  const [cargando, setCargando] = useState(true);
   const { usuario } = useAuth();
-  let intervalo = null;
+
+  useEffect(() => {
+    generarQR();
+  }, []);
 
   const generarQR = async () => {
     setCargando(true);
-    setQr(null);
     try {
       const respuesta = await api.get('/qr/generar');
       setQr(respuesta.data.qr);
-      setSegundos(60);
-      intervalo = setInterval(() => {
-        setSegundos(prev => {
-          if (prev <= 1) {
-            clearInterval(intervalo);
-            setQr(null);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
     } catch (error) {
-      alert(error.response?.data?.mensaje || 'No se pudo generar el QR');
+      alert(error.response?.data?.mensaje || 'No se pudo cargar el QR');
     } finally {
       setCargando(false);
     }
@@ -45,23 +35,21 @@ const EmpleadoQR = () => {
         </span>
       </div>
 
-      {qr && (
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 w-full mb-4 flex flex-col items-center">
-          <img src={qr} alt="QR Code" className="w-56 h-56 mb-3" />
-          <span className={`font-bold text-lg px-4 py-2 rounded-full text-white ${segundos > 20 ? 'bg-secundario' : 'bg-red-500'}`}>
-            ⏱ Expira en {segundos}s
-          </span>
-          <p className="text-gray-400 text-xs mt-2 text-center">⚠️ No compartas este código con nadie</p>
-        </div>
-      )}
-
-      <button
-        onClick={generarQR}
-        disabled={cargando}
-        className="w-full bg-principal text-white font-bold py-4 rounded-2xl border-b-4 border-acento hover:opacity-90 transition disabled:opacity-50 text-lg"
-      >
-        {cargando ? 'Generando...' : qr ? '🔄 Generar nuevo QR' : '📱 Generar QR de acceso'}
-      </button>
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full mb-4 flex flex-col items-center min-h-[260px] justify-center">
+        {cargando ? (
+          <div className="text-principal">Cargando QR...</div>
+        ) : qr ? (
+          <>
+            <img src={qr} alt="QR Code" className="w-56 h-56 mb-3" />
+            <span className="font-bold text-sm px-4 py-2 rounded-full text-white bg-secundario">
+              ✓ Código permanente
+            </span>
+            <p className="text-gray-400 text-xs mt-2 text-center">Este es tu código de acceso, preséntalo en la entrada</p>
+          </>
+        ) : (
+          <p className="text-red-500">No se pudo cargar el QR</p>
+        )}
+      </div>
     </div>
   );
 };
