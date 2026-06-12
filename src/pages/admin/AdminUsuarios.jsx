@@ -37,6 +37,8 @@ const AdminUsuarios = () => {
   const [credenciales, setCredenciales] = useState({ numero_nomina: '', contrasena: '' });
   const [verPass, setVerPass] = useState(false);
   const [verPassCred, setVerPassCred] = useState(false);
+  const [fotoNueva, setFotoNueva] = useState(null);
+const [fotoEdicion, setFotoEdicion] = useState(null);
   const { usuario } = useAuth();
 
   const rolesDisponibles = usuario.rol === 'administrador' ? ROLES_ADMIN : ROLES_ADMINISTRATIVO;
@@ -67,6 +69,12 @@ const AdminUsuarios = () => {
     setUsuarios(res.data);
   };
 
+  const convertirABase64 = (file, callback) => {
+  const reader = new FileReader();
+  reader.onload = () => callback(reader.result);
+  reader.readAsDataURL(file);
+};
+
   const abrirEditar = (item) => {
     if (!window.confirm(`¿Deseas editar a ${item.nombre} ${item.apellido_paterno}?`)) return;
     setUsuarioSel(item);
@@ -78,20 +86,25 @@ const AdminUsuarios = () => {
       id_puesto: item.id_puesto || 1,
       id_departamento: item.id_departamento || 1,
     });
-    setModalVer(false);
-    setModalEditar(true);
+    setFotoEdicion(null);
+setModalVer(false);
+setModalEditar(true);
   };
 
   const guardarEdicion = async () => {
-    try {
-      await api.put(`/usuarios/${usuarioSel.id}`, datosEdicion);
-      setModalEditar(false);
-      cargarUsuarios();
-      alert('Usuario actualizado correctamente');
-    } catch (error) {
-      alert(error.response?.data?.mensaje || 'Error al actualizar');
-    }
-  };
+  try {
+    await api.put(`/usuarios/${usuarioSel.id}`, {
+      ...datosEdicion,
+      foto_url: fotoEdicion || usuarioSel.foto_url
+    });
+    setModalEditar(false);
+    setFotoEdicion(null);
+    cargarUsuarios();
+    alert('Usuario actualizado correctamente');
+  } catch (error) {
+    alert(error.response?.data?.mensaje || 'Error al actualizar');
+  }
+};
 
   const guardarCredenciales = async () => {
     if (!credenciales.numero_nomina) { alert('El número de nómina es obligatorio'); return; }
@@ -126,19 +139,20 @@ const AdminUsuarios = () => {
   };
 
   const crearUsuario = async () => {
-    if (!nuevoUsuario.numero_nomina || !nuevoUsuario.nombre || !nuevoUsuario.contrasena) {
-      alert('Nómina, nombre y contraseña son obligatorios'); return;
-    }
-    try {
-      await api.post('/usuarios', nuevoUsuario);
-      setModalNuevo(false);
-      setNuevoUsuario(usuarioVacio);
-      cargarUsuarios();
-      alert('Usuario creado correctamente');
-    } catch (error) {
-      alert(error.response?.data?.mensaje || 'Error al crear usuario');
-    }
-  };
+  if (!nuevoUsuario.numero_nomina || !nuevoUsuario.nombre || !nuevoUsuario.contrasena) {
+    alert('Nómina, nombre y contraseña son obligatorios'); return;
+  }
+  try {
+    await api.post('/usuarios', { ...nuevoUsuario, foto_url: fotoNueva });
+    setModalNuevo(false);
+    setNuevoUsuario(usuarioVacio);
+    setFotoNueva(null);
+    cargarUsuarios();
+    alert('Usuario creado correctamente');
+  } catch (error) {
+    alert(error.response?.data?.mensaje || 'Error al crear usuario');
+  }
+};
 
   const usuariosFiltrados = usuarios.filter(u => {
     const coincideBusqueda =
@@ -311,6 +325,19 @@ const AdminUsuarios = () => {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-principal mb-4">Editar usuario</h2>
+            <div className="flex flex-col items-center mb-4">
+  {(fotoEdicion || usuarioSel.foto_url)
+    ? <img src={fotoEdicion || usuarioSel.foto_url} className="w-24 h-24 rounded-full object-cover mb-2" alt="" />
+    : <div className="w-24 h-24 rounded-full bg-principal flex items-center justify-center text-white text-2xl font-bold mb-2">
+        {usuarioSel.nombre[0]}{usuarioSel.apellido_paterno[0]}
+      </div>
+  }
+  <label className="bg-secundario text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer hover:opacity-90 transition">
+    Cambiar foto
+    <input type="file" accept="image/*" className="hidden"
+      onChange={e => e.target.files[0] && convertirABase64(e.target.files[0], setFotoEdicion)} />
+  </label>
+</div>
             {[{ campo: 'nombre', label: 'Nombre' }, { campo: 'apellido_paterno', label: 'Apellido paterno' }, { campo: 'apellido_materno', label: 'Apellido materno' }].map(({ campo, label }) => (
               <div key={campo} className="mb-3">
                 <label className="text-xs text-gray-400 mb-1 block">{label}</label>
@@ -354,6 +381,19 @@ const AdminUsuarios = () => {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-principal mb-4">Nuevo usuario</h2>
+            <div className="flex flex-col items-center mb-4">
+  {fotoNueva
+    ? <img src={fotoNueva} className="w-24 h-24 rounded-full object-cover mb-2" alt="" />
+    : <div className="w-24 h-24 rounded-full bg-gray-100 border-2 border-dashed border-principal flex items-center justify-center mb-2">
+        <span className="text-principal text-xs text-center">📷 Sin foto</span>
+      </div>
+  }
+  <label className="bg-principal text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer hover:opacity-90 transition">
+    {fotoNueva ? 'Cambiar foto' : 'Agregar foto'}
+    <input type="file" accept="image/*" className="hidden"
+      onChange={e => e.target.files[0] && convertirABase64(e.target.files[0], setFotoNueva)} />
+  </label>
+</div>
             <label className="text-xs text-gray-400 mb-1 block">Número de nómina</label>
             <input className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal mb-3 focus:outline-none"
               type="number" placeholder="12345" value={nuevoUsuario.numero_nomina}
@@ -395,7 +435,7 @@ const AdminUsuarios = () => {
               className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-4 border-acento hover:opacity-90 transition mb-2">
               Guardar
             </button>
-            <button onClick={() => { setModalNuevo(false); setNuevoUsuario(usuarioVacio); }}
+           <button onClick={() => { setModalNuevo(false); setNuevoUsuario(usuarioVacio); setFotoNueva(null); }}
               className="w-full border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition">
               Cancelar
             </button>
