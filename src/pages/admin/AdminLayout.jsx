@@ -7,6 +7,7 @@ import AdminDepartamentos from './AdminDepartamentos';
 import AdminHistorial from './AdminHistorial';
 import AdminCargaMasiva from './AdminCargaMasiva';
 import EmpleadoQR from '../empleado/EmpleadoQR';
+import AdminScanner from './AdminScanner';
 
 const links = [
   { to: '/dashboard', icono: '🏠', label: 'Inicio' },
@@ -16,6 +17,7 @@ const links = [
   { to: '/importar', icono: '📥', label: 'Importar' },
   { to: '/historial', icono: '📋', label: 'Historial' },
   { to: '/mi-qr', icono: '📱', label: 'Mi QR' },
+  { to: '/scanner', icono: '📷', label: 'Scanner' },
 ];
 
 const AdminLayout = () => (
@@ -31,6 +33,7 @@ const AdminLayout = () => (
         <Route path="/historial" element={<AdminHistorial />} />
         <Route path="/mi-qr" element={<EmpleadoQR />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="/scanner" element={<AdminScanner />} />
       </Routes>
     </div>
   </div>

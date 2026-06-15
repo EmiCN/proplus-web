@@ -94,31 +94,64 @@ const PoliciaScanner = () => {
       )}
 
       {resultado && (
-        <div className={`rounded-2xl p-5 mb-4 border-l-4 ${resultado.acceso ? 'bg-green-50 border-secundario' : 'bg-red-50 border-red-500'}`}>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-4xl">{resultado.acceso ? '✅' : '❌'}</span>
-            <h2 className={`text-xl font-bold ${resultado.acceso ? 'text-secundario' : 'text-red-500'}`}>
-              {resultado.acceso ? 'ACCESO PERMITIDO' : 'ACCESO DENEGADO'}
-            </h2>
-          </div>
-          {resultado.acceso && resultado.empleado && (
-            <div className="bg-white rounded-xl p-3 mb-3">
-              <p className="font-bold text-principal">{resultado.empleado.nombre} {resultado.empleado.apellido_paterno}</p>
-              <p className="text-gray-400 text-sm">Puesto: {resultado.empleado.puesto || 'N/A'}</p>
-              <p className="text-gray-400 text-sm">Departamento: {resultado.empleado.departamento || 'N/A'}</p>
+  <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
+      <div className={`p-5 flex items-center gap-3 ${resultado.acceso ? 'bg-secundario' : 'bg-red-500'}`}>
+        <span className="text-4xl">{resultado.acceso ? '✅' : '❌'}</span>
+        <div>
+          <h2 className="text-white font-bold text-xl">
+            {resultado.acceso ? 'ACCESO PERMITIDO' : 'ACCESO DENEGADO'}
+          </h2>
+          {!resultado.acceso && <p className="text-white/80 text-sm">{resultado.mensaje}</p>}
+        </div>
+      </div>
+
+      {resultado.acceso && resultado.empleado && (
+        <div className="p-5">
+          <div className="flex items-center gap-4 mb-4">
+            {resultado.empleado.foto_url
+              ? <img src={resultado.empleado.foto_url} className="w-20 h-20 rounded-full object-cover border-4 border-principal" alt="" />
+              : <div className="w-20 h-20 rounded-full bg-principal flex items-center justify-center text-white text-3xl font-bold border-4 border-principal">
+                  {resultado.empleado.nombre[0]}{resultado.empleado.apellido_paterno[0]}
+                </div>
+            }
+            <div>
+              <h3 className="font-bold text-principal text-lg leading-tight">
+                {resultado.empleado.nombre} {resultado.empleado.apellido_paterno} {resultado.empleado.apellido_materno}
+              </h3>
+              <span className="inline-block bg-principal text-white text-xs font-bold px-2 py-0.5 rounded-full mt-1 uppercase">
+                {resultado.empleado.rol}
+              </span>
             </div>
-          )}
-          {!resultado.acceso && (
-            <p className="text-red-500 text-sm mb-3">{resultado.mensaje}</p>
-          )}
-          <button
-            onClick={iniciarEscaneo}
-            className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition"
-          >
-            📷 Escanear otro
-          </button>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+            {[
+              { label: 'Número de nómina', valor: resultado.empleado.numero_nomina },
+              { label: 'Puesto', valor: resultado.empleado.puesto || 'No asignado' },
+              { label: 'Departamento', valor: resultado.empleado.departamento || 'No asignado' },
+            ].map(({ label, valor }) => (
+              <div key={label} className="flex justify-between items-center border-b border-gray-100 pb-2">
+                <span className="text-gray-400 text-sm">{label}</span>
+                <span className="font-semibold text-principal text-sm">{valor}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
+
+      <div className="px-5 pb-5 flex gap-3">
+        <button onClick={iniciarEscaneo}
+          className="flex-1 bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition">
+          📷 Escanear otro
+        </button>
+        <button onClick={() => setResultado(null)}
+          className="flex-1 border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
