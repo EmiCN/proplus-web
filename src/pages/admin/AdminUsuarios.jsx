@@ -40,6 +40,9 @@ const AdminUsuarios = () => {
   const [fotoNueva, setFotoNueva] = useState(null);
 const [fotoEdicion, setFotoEdicion] = useState(null);
   const { usuario } = useAuth();
+  const [modalQR, setModalQR] = useState(false);
+const [qrUsuario, setQrUsuario] = useState(null);
+const [cargandoQR, setCargandoQR] = useState(false);
 
   const rolesDisponibles = usuario.rol === 'administrador' ? ROLES_ADMIN : ROLES_ADMINISTRATIVO;
 
@@ -68,6 +71,22 @@ const [fotoEdicion, setFotoEdicion] = useState(null);
     const res = await api.get('/usuarios');
     setUsuarios(res.data);
   };
+  const verQRUsuario = async (item) => {
+  setUsuarioSel(item);
+  setQrUsuario(null);
+  setModalVer(false);
+  setModalQR(true);
+  setCargandoQR(true);
+  try {
+    const res = await api.get(`/qr/usuario/${item.id}`);
+    setQrUsuario(res.data);
+  } catch (error) {
+    alert('Error al obtener el QR');
+    setModalQR(false);
+  } finally {
+    setCargandoQR(false);
+  }
+};
 
   const convertirABase64 = (file, callback) => {
   const reader = new FileReader();
@@ -279,6 +298,10 @@ setModalEditar(true);
                 🔑 Credenciales
               </button>
             </div>
+            <button onClick={() => verQRUsuario(usuarioSel)}
+              className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition mb-2 text-sm">
+              📱 Ver QR de acceso
+            </button>
             <button onClick={() => setModalVer(false)}
               className="w-full bg-gray-100 text-principal font-bold py-3 rounded-xl hover:bg-gray-200 transition">
               Cerrar
@@ -442,6 +465,41 @@ setModalEditar(true);
           </div>
         </div>
       )}
+      {/* Modal QR */}
+{modalQR && usuarioSel && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-2xl p-6 w-full max-w-sm flex flex-col items-center">
+      <h2 className="text-lg font-bold text-principal mb-4 text-center">
+        QR de acceso
+      </h2>
+      {cargandoQR ? (
+        <div className="py-10 text-gray-400">Cargando QR...</div>
+      ) : qrUsuario ? (
+        <>
+          <div className="bg-white border-2 border-gray-100 rounded-2xl p-4 mb-4 flex flex-col items-center">
+            <img src={qrUsuario.qr} alt="QR" className="w-52 h-52 mb-3" />
+            <p className="font-bold text-principal text-center">{qrUsuario.usuario.nombre} {qrUsuario.usuario.apellido_paterno}</p>
+            <p className="text-gray-400 text-sm">Nómina: {qrUsuario.usuario.numero_nomina}</p>
+            <p className="text-gray-400 text-sm">Puesto: {qrUsuario.usuario.puesto || 'N/A'}</p>
+            <p className="text-gray-400 text-sm">Depto: {qrUsuario.usuario.departamento || 'N/A'}</p>
+            <span className="mt-2 bg-secundario text-white text-xs font-bold px-3 py-1 rounded-full">
+              ✓ Código permanente
+            </span>
+          </div>
+          <button
+            onClick={() => window.print()}
+            className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition mb-2">
+            🖨️ Imprimir QR
+          </button>
+        </>
+      ) : null}
+      <button onClick={() => setModalQR(false)}
+        className="w-full border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition">
+        Cerrar
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };
