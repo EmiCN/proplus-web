@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import TarjetaQR from '../../components/TarjetaQR';
 
 const ROLES_ADMIN = [
   { id: 1, nombre: 'Administrador' },
@@ -465,36 +466,29 @@ setModalEditar(true);
           </div>
         </div>
       )}
-      {/* Modal QR */}
+     {/* Modal QR */}
 {modalQR && usuarioSel && (
   <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
     <div className="bg-white rounded-2xl p-6 w-full max-w-sm flex flex-col items-center">
-      <h2 className="text-lg font-bold text-principal mb-4 text-center">
+      <h2 className="text-lg font-bold text-principal mb-4 text-center no-print">
         QR de acceso
       </h2>
       {cargandoQR ? (
         <div className="py-10 text-gray-400">Cargando QR...</div>
       ) : qrUsuario ? (
         <>
-          <div className="bg-white border-2 border-gray-100 rounded-2xl p-4 mb-4 flex flex-col items-center">
-            <img src={qrUsuario.qr} alt="QR" className="w-52 h-52 mb-3" />
-            <p className="font-bold text-principal text-center">{qrUsuario.usuario.nombre} {qrUsuario.usuario.apellido_paterno}</p>
-            <p className="text-gray-400 text-sm">Nómina: {qrUsuario.usuario.numero_nomina}</p>
-            <p className="text-gray-400 text-sm">Puesto: {qrUsuario.usuario.puesto || 'N/A'}</p>
-            <p className="text-gray-400 text-sm">Depto: {qrUsuario.usuario.departamento || 'N/A'}</p>
-            <span className="mt-2 bg-secundario text-white text-xs font-bold px-3 py-1 rounded-full">
-              ✓ Código permanente
-            </span>
+          <div id="tarjeta-para-imprimir">
+            <TarjetaQR usuario={qrUsuario.usuario} qr={qrUsuario} />
           </div>
           <button
             onClick={() => window.print()}
-            className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition mb-2">
-            🖨️ Imprimir QR
+            className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition mb-2 mt-4 no-print">
+            🖨️ Imprimir tarjeta
           </button>
         </>
       ) : null}
       <button onClick={() => setModalQR(false)}
-        className="w-full border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition">
+        className="w-full border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition no-print">
         Cerrar
       </button>
     </div>

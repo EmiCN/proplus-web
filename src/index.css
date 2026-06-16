@@ -13,3 +13,21 @@ body {
   background-color: #F4F6FA;
   color: #1B2E6B;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #tarjeta-para-imprimir, #tarjeta-para-imprimir * {
+    visibility: visible;
+  }
+  #tarjeta-para-imprimir {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
