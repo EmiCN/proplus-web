@@ -43,19 +43,23 @@ const PoliciaScanner = () => {
   };
 
   const validarQR = async (token) => {
-    setCargando(true);
-    try {
-      const respuesta = await api.post('/qr/validar', { token });
-      setResultado(respuesta.data);
-    } catch (error) {
-      setResultado({
-        acceso: false,
-        mensaje: error.response?.data?.mensaje || 'Error al validar QR'
-      });
-    } finally {
-      setCargando(false);
+  setCargando(true);
+  try {
+    const respuesta = await api.post('/qr/validar', { token });
+    setResultado(respuesta.data);
+    // Sonido según resultado
+    if (respuesta.data.acceso) {
+      new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(() => {});
+    } else {
+      new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
     }
-  };
+  } catch (error) {
+    setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });
+    new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
+  } finally {
+    setCargando(false);
+  }
+};
 
   return (
     <div className="py-4">
@@ -108,10 +112,10 @@ const PoliciaScanner = () => {
 
       {resultado.acceso && resultado.empleado && (
         <div className="p-5">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="mb-4">
             {resultado.empleado.foto_url
-              ? <img src={resultado.empleado.foto_url} className="w-20 h-20 rounded-full object-cover border-4 border-principal" alt="" />
-              : <div className="w-20 h-20 rounded-full bg-principal flex items-center justify-center text-white text-3xl font-bold border-4 border-principal">
+              ? <img src={resultado.empleado.foto_url} className="w-20 h-20 rounded-full object-cover border-4 <img src={resultado.empleado.foto_url} className="w-full h-40 object-cover object-top" alt="" style={{borderRadius: '0'}} />-principal" alt="" />
+              : <div className="w-full h-40 bg-principal flex items-center justify-center text-white text-5xl font-bold">
                   {resultado.empleado.nombre[0]}{resultado.empleado.apellido_paterno[0]}
                 </div>
             }
