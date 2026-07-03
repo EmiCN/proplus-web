@@ -114,7 +114,7 @@ const PoliciaScanner = () => {
         <div className="p-5">
           <div className="mb-4">
             {resultado.empleado.foto_url
-              ? <img src={resultado.empleado.foto_url} className="w-20 h-20 rounded-full object-cover border-4 <img src={resultado.empleado.foto_url} className="w-full h-40 object-cover object-top" alt="" style={{borderRadius: '0'}} />-principal" alt="" />
+              ? <img src={resultado.empleado.foto_url} className="w-full h-40 object-cover object-top" alt="" style={{borderRadius: '0'}} />
               : <div className="w-full h-40 bg-principal flex items-center justify-center text-white text-5xl font-bold">
                   {resultado.empleado.nombre[0]}{resultado.empleado.apellido_paterno[0]}
                 </div>
