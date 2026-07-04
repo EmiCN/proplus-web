@@ -49,9 +49,14 @@ const PoliciaScanner = () => {
     setResultado(respuesta.data);
     // Sonido según resultado
     if (respuesta.data.acceso) {
-      new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(() => {});
+      // Éxito
+const audioExito = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2ozLS93v+3aq1gyKS94w/HgqlcuJiZ2v+7lqlcuKCZ0vu3lqlguKCVzu+3mqlguKCR0u+3mqVguKSR0u+3nqFcuKCR0u+3oqFcuKiV0u+7nqFguKiV1u+7nqFguKiZ1u+7nqFguKiZ2u+7nqFcuKiZ2uu7nqFcuKiZ3uu7nqFcuKid3uu7op1cuKid4uu7op1cuKid4uu/oqFcuKid5ue/oqFcuKih5ue/oqFcuKih6ue/oqFcuKil7ue/oqFcuKil8uPDoqFcuKit8uPDop1cuKit9uPDop1cuKit+t/Dopl');
+audioExito.volume = 0.5;
+audioExito.play().catch(() => {});
     } else {
-      new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
+      const audioError = new Audio('data:audio/wav;base64,UklGRl9FAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTtFAACBgH9/f3+AgIB/f3+AgICAgH9/f4CBgYB/f3+AgYGBf39/gIGBgYB/f3+AgYGBgH9/f4CBgYGAf39/gIGBgYB/f39/gYGBgYB/f3+AgYGBgYB/f3+AgYGBgYCAf3+AgICAgYCAf4CAgICBgIB/gICAgoGAgH+AgICCgYCAgICAgYGAgICAgIGBgICAf4CAgYGAgICAgICBgYCAgIB/gICBgYCAgICAgIGAgICAgH+AgIGBgICAgIB/gICBgYCAgICAgIGAgICAgICAgoGAgICAgH+AgIGBgICAgICAgoGAgICAgIB/gICBgYCAgICA');
+audioError.volume = 0.5;
+audioError.play().catch(() => {});
     }
   } catch (error) {
     setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });

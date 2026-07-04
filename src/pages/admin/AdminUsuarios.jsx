@@ -216,10 +216,10 @@ setModalEditar(true);
         {usuariosFiltrados.map(item => (
           <div key={item.id} className={`bg-white rounded-2xl p-4 shadow-sm border-l-4 border-principal ${!item.activo ? 'opacity-60' : ''}`}>
             <div className="flex items-center gap-3 mb-3">
-              {item.foto_url
-                ? <img src={item.foto_url} className="w-12 h-12 rounded-full object-cover" alt="" />
-                : <div className="w-12 h-12 rounded-full bg-principal flex items-center justify-center text-white font-bold text-lg">
-                    {item.nombre[0]}{item.apellido_paterno[0]}
+              {usuarioSel.foto_url
+                ? <img src={usuarioSel.foto_url} className="w-32 h-44 rounded-2xl object-cover object-center mb-3 border-4 border-principal" alt="" />
+                : <div className="w-32 h-44 rounded-2xl bg-principal flex items-center justify-center text-white text-4xl font-bold mb-3 border-4 border-principal">
+                    {usuarioSel.nombre[0]}{usuarioSel.apellido_paterno[0]}
                   </div>
               }
               <div className="flex-1">
@@ -345,60 +345,62 @@ setModalEditar(true);
       )}
 
       {/* Modal Editar */}
-      {modalEditar && usuarioSel && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-bold text-principal mb-4">Editar usuario</h2>
-            <div className="flex flex-col items-center mb-4">
-  {(fotoEdicion || usuarioSel.foto_url)
-    ? <img src={fotoEdicion || usuarioSel.foto_url} className="w-24 h-24 rounded-full object-cover mb-2" alt="" />
-    : <div className="w-24 h-24 rounded-full bg-principal flex items-center justify-center text-white text-2xl font-bold mb-2">
-        {usuarioSel.nombre[0]}{usuarioSel.apellido_paterno[0]}
-      </div>
-  }
-  <label className="bg-secundario text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer hover:opacity-90 transition">
-    Cambiar foto
-    <input type="file" accept="image/*" className="hidden"
-      onChange={e => e.target.files[0] && convertirABase64(e.target.files[0], setFotoEdicion)} />
-  </label>
-</div>
-            {[{ campo: 'nombre', label: 'Nombre' }, { campo: 'apellido_paterno', label: 'Apellido paterno' }, { campo: 'apellido_materno', label: 'Apellido materno' }].map(({ campo, label }) => (
-              <div key={campo} className="mb-3">
-                <label className="text-xs text-gray-400 mb-1 block">{label}</label>
-                <input className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal focus:outline-none"
-                  value={datosEdicion[campo] || ''}
-                  onChange={e => setDatosEdicion({ ...datosEdicion, [campo]: e.target.value })} />
-              </div>
-            ))}
-            <label className="text-xs text-gray-400 mb-1 block">Rol</label>
-            <select className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal mb-3 focus:outline-none"
-              value={datosEdicion.id_rol}
-              onChange={e => setDatosEdicion({ ...datosEdicion, id_rol: parseInt(e.target.value) })}>
-              {rolesDisponibles.map(r => <option key={r.id} value={r.id}>{r.nombre}</option>)}
-            </select>
-            <label className="text-xs text-gray-400 mb-1 block">Puesto</label>
-            <select className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal mb-3 focus:outline-none"
-              value={datosEdicion.id_puesto}
-              onChange={e => setDatosEdicion({ ...datosEdicion, id_puesto: parseInt(e.target.value) })}>
-              {puestosDB.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
-            </select>
-            <label className="text-xs text-gray-400 mb-1 block">Departamento</label>
-            <select className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal mb-4 focus:outline-none"
-              value={datosEdicion.id_departamento}
-              onChange={e => setDatosEdicion({ ...datosEdicion, id_departamento: parseInt(e.target.value) })}>
-              {departamentosDB.map(d => <option key={d.id} value={d.id}>{d.nombre}</option>)}
-            </select>
-            <button onClick={guardarEdicion}
-              className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-4 border-acento hover:opacity-90 transition mb-2">
-              Guardar cambios
-            </button>
-            <button onClick={() => setModalEditar(false)}
-              className="w-full border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition">
-              Cancelar
-            </button>
-          </div>
+     {modalEditar && usuarioSel && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-2xl p-6 w-full max-w-sm max-h-[90vh] overflow-y-auto">
+      <h2 className="text-lg font-bold text-principal mb-4">Editar usuario</h2>
+      <p className="text-gray-400 text-sm mb-4">{usuarioSel.nombre} {usuarioSel.apellido_paterno}</p>
+
+      {[
+        { campo: 'nombre', label: 'Nombre' },
+        { campo: 'apellido_paterno', label: 'Apellido paterno' },
+        { campo: 'apellido_materno', label: 'Apellido materno' }
+      ].map(({ campo, label }) => (
+        <div key={campo} className="mb-3">
+          <label className="text-xs text-gray-400 mb-1 block">{label}</label>
+          <input
+            className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal focus:outline-none focus:border-principal"
+            value={datosEdicion[campo] || ''}
+            onChange={e => setDatosEdicion({ ...datosEdicion, [campo]: e.target.value })}
+          />
         </div>
-      )}
+      ))}
+
+      <label className="text-xs text-gray-400 mb-1 block">Rol</label>
+      <select
+        className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal mb-3 focus:outline-none"
+        value={datosEdicion.id_rol}
+        onChange={e => setDatosEdicion({ ...datosEdicion, id_rol: parseInt(e.target.value) })}>
+        {rolesDisponibles.map(r => <option key={r.id} value={r.id}>{r.nombre}</option>)}
+      </select>
+
+      <label className="text-xs text-gray-400 mb-1 block">Puesto</label>
+      <select
+        className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal mb-3 focus:outline-none"
+        value={datosEdicion.id_puesto}
+        onChange={e => setDatosEdicion({ ...datosEdicion, id_puesto: parseInt(e.target.value) })}>
+        {puestosDB.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
+      </select>
+
+      <label className="text-xs text-gray-400 mb-1 block">Departamento</label>
+      <select
+        className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50 text-principal mb-4 focus:outline-none"
+        value={datosEdicion.id_departamento}
+        onChange={e => setDatosEdicion({ ...datosEdicion, id_departamento: parseInt(e.target.value) })}>
+        {departamentosDB.map(d => <option key={d.id} value={d.id}>{d.nombre}</option>)}
+      </select>
+
+      <button onClick={guardarEdicion}
+        className="w-full bg-principal text-white font-bold py-3 rounded-xl border-b-4 border-acento hover:opacity-90 transition mb-2">
+        Guardar cambios
+      </button>
+      <button onClick={() => setModalEditar(false)}
+        className="w-full border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition">
+        Cancelar
+      </button>
+    </div>
+  </div>
+)}
 
       {/* Modal Nuevo */}
       {modalNuevo && (
