@@ -96,20 +96,19 @@ const [cargandoQR, setCargandoQR] = useState(false);
 };
 
   const abrirEditar = (item) => {
-    if (!window.confirm(`¿Deseas editar a ${item.nombre} ${item.apellido_paterno}?`)) return;
-    setUsuarioSel(item);
-    setDatosEdicion({
-      nombre: item.nombre,
-      apellido_paterno: item.apellido_paterno,
-      apellido_materno: item.apellido_materno || '',
-      id_rol: item.id_rol || 4,
-      id_puesto: item.id_puesto || 1,
-      id_departamento: item.id_departamento || 1,
-    });
-    setFotoEdicion(null);
-setModalVer(false);
-setModalEditar(true);
-  };
+  if (!window.confirm(`¿Deseas editar a ${item.nombre} ${item.apellido_paterno}?`)) return;
+  setUsuarioSel(item);
+  setDatosEdicion({
+    nombre: item.nombre,
+    apellido_paterno: item.apellido_paterno,
+    apellido_materno: item.apellido_materno || '',
+    id_rol: item.id_rol || 4,
+    id_puesto: item.id_puesto || 1,
+    id_departamento: item.id_departamento || 1,
+  });
+  setModalVer(false);
+  setModalEditar(true);
+};
 
   const guardarEdicion = async () => {
   try {
