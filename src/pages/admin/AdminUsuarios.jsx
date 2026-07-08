@@ -174,9 +174,11 @@ const [cargandoQR, setCargandoQR] = useState(false);
 };
 
   const usuariosFiltrados = usuarios.filter(u => {
+    const nombre = u.nombre || '';
+    const nomina = u.numero_nomina || '';
     const coincideBusqueda =
-      u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      u.numero_nomina.toLowerCase().includes(busqueda.toLowerCase());
+      nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      nomina.toLowerCase().includes(busqueda.toLowerCase());
     const coincidePuesto = !filtroPuesto || filtroPuesto === 'Todos' || u.puesto === filtroPuesto;
     return coincideBusqueda && coincidePuesto;
   });
