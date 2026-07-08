@@ -43,28 +43,28 @@ const PoliciaScanner = () => {
   };
 
   const validarQR = async (token) => {
-  setCargando(true);
-  try {
-    const respuesta = await api.post('/qr/validar', { token });
-    setResultado(respuesta.data);
-    // Sonido según resultado
-    if (respuesta.data.acceso) {
-      // Éxito
-const audioExito = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2ozLS93v+3aq1gyKS94w/HgqlcuJiZ2v+7lqlcuKCZ0vu3lqlguKCVzu+3mqlguKCR0u+3mqVguKSR0u+3nqFcuKCR0u+3oqFcuKiV0u+7nqFguKiV1u+7nqFguKiZ1u+7nqFguKiZ2u+7nqFcuKiZ2uu7nqFcuKiZ3uu7nqFcuKid3uu7op1cuKid4uu7op1cuKid4uu/oqFcuKid5ue/oqFcuKih5ue/oqFcuKih6ue/oqFcuKil7ue/oqFcuKil8uPDoqFcuKit8uPDop1cuKit9uPDop1cuKit+t/Dopl');
-audioExito.volume = 0.5;
-audioExito.play().catch(() => {});
-    } else {
-      const audioError = new Audio('data:audio/wav;base64,UklGRl9FAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTtFAACBgH9/f3+AgIB/f3+AgICAgH9/f4CBgYB/f3+AgYGBf39/gIGBgYB/f3+AgYGBgH9/f4CBgYGAf39/gIGBgYB/f39/gYGBgYB/f3+AgYGBgYB/f3+AgYGBgYCAf3+AgICAgYCAf4CAgICBgIB/gICAgoGAgH+AgICCgYCAgICAgYGAgICAgIGBgICAf4CAgYGAgICAgICBgYCAgIB/gICBgYCAgICAgIGAgICAgH+AgIGBgICAgIB/gICBgYCAgICAgIGAgICAgICAgoGAgICAgH+AgIGBgICAgICAgoGAgICAgIB/gICBgYCAgICA');
-audioError.volume = 0.5;
-audioError.play().catch(() => {});
+    setCargando(true);
+    try {
+      const respuesta = await api.post('/qr/validar', { token });
+      setResultado(respuesta.data);
+      // Sonido según resultado
+      if (respuesta.data.acceso) {
+        // Éxito
+        const audioExito = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2ozLS93v+3aq1gyKS94w/HgqlcuJiZ2v+7lqlcuKCZ0vu3lqlguKCVzu+3mqlguKCR0u+3mqVguKSR0u+3nqFcuKCR0u+3oqFcuKiV0u+7nqFguKiV1u+7nqFguKiZ1u+7nqFguKiZ2u+7nqFcuKiZ2uu7nqFcuKiZ3uu7nqFcuKid3uu7op1cuKid4uu7op1cuKid4uu/oqFcuKid5ue/oqFcuKih5ue/oqFcuKih6ue/oqFcuKil7ue/oqFcuKil8uPDoqFcuKit8uPDop1cuKit9uPDop1cuKit+t/Dopl');
+        audioExito.volume = 0.5;
+        audioExito.play().catch(() => {});
+      } else {
+        const audioError = new Audio('data:audio/wav;base64,UklGRl9FAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTtFAACBgH9/f3+AgIB/f3+AgICAgH9/f4CBgYB/f3+AgYGBf39/gIGBgYB/f3+AgYGBgH9/f4CBgYGAf39/gIGBgYB/f39/gYGBgYB/f3+AgYGBgYB/f3+AgYGBgYCAf3+AgICAgYCAf4CAgICBgIB/gICAgoGAgH+AgICCgYCAgICAgYGAgICAgIGBgICAf4CAgYGAgICAgICBgYCAgIB/gICBgYCAgICAgIGAgICAgH+AgIGBgICAgIB/gICBgYCAgICAgIGAgICAgICAgoGAgICAgH+AgIGBgICAgICAgoGAgICAgIB/gICBgYCAgICA');
+        audioError.volume = 0.5;
+        audioError.play().catch(() => {});
+      }
+    } catch (error) {
+      setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });
+      new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
+    } finally {
+      setCargando(false);
     }
-  } catch (error) {
-    setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });
-    new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
-  } finally {
-    setCargando(false);
-  }
-};
+  };
 
   return (
     <div className="py-4">
@@ -103,70 +103,87 @@ audioError.play().catch(() => {});
       )}
 
       {resultado && (
-  <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
-      <div className={`p-5 flex items-center gap-3 ${resultado.acceso ? 'bg-secundario' : 'bg-red-500'}`}>
-        <span className="text-4xl">{resultado.acceso ? '✅' : '❌'}</span>
-        <div>
-          <h2 className="text-white font-bold text-xl">
-            {resultado.acceso ? 'ACCESO PERMITIDO' : 'ACCESO DENEGADO'}
-          </h2>
-          {!resultado.acceso && <p className="text-white/80 text-sm">{resultado.mensaje}</p>}
-        </div>
-      </div>
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+          
+          {/* CONTENEDOR PRINCIPAL DEL MODAL */}
+          <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            
+            {/* ENCABEZADO: ÉXITO O ERROR */}
+            <div className={`p-5 flex items-center gap-3 shrink-0 ${resultado.acceso ? 'bg-secundario' : 'bg-red-500'}`}>
+              <span className="text-4xl">{resultado.acceso ? '✅' : '❌'}</span>
+              <div>
+                <h2 className="text-white font-bold text-xl">
+                  {resultado.acceso ? 'ACCESO PERMITIDO' : 'ACCESO DENEGADO'}
+                </h2>
+                {!resultado.acceso && <p className="text-white/80 text-sm">{resultado.mensaje}</p>}
+              </div>
+            </div>
 
-      {resultado?.acceso && resultado?.empleado && (
-  <div className="mb-4">
-    {resultado.empleado.foto_url
-      ? <img 
-          src={resultado.empleado.foto_url} 
-          className="w-full object-cover object-top"
-          style={{ height: '280px' }}
-          alt="" 
-        />
-      : <div 
-          className="w-full bg-principal flex items-center justify-center text-white text-6xl font-bold"
-          style={{ height: '280px' }}
-        >
-          {resultado.empleado.nombre?.[0] || '?'}{resultado.empleado.apellido_paterno?.[0] || ''}
-        </div>
-    }
-    <div className="p-4">
-      <h3 className="font-bold text-principal text-lg leading-tight">
-        {resultado.empleado.nombre} {resultado.empleado.apellido_paterno} {resultado.empleado.apellido_materno}
-      </h3>
-      <span className="inline-block bg-principal text-white text-xs font-bold px-2 py-0.5 rounded-full mt-1 uppercase">
-        {resultado.empleado.rol}
-      </span>
-    </div>
-    <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-y-auto" style={{ maxHeight: '90vh' }}>
-      {[
-        { label: 'Número de nómina', valor: resultado.empleado.numero_nomina },
-        { label: 'Puesto', valor: resultado.empleado.puesto || 'No asignado' },
-        { label: 'Departamento', valor: resultado.empleado.departamento || 'No asignado' },
-      ].map(({ label, valor }) => (
-        <div key={label} className="flex justify-between items-center border-b border-gray-100 pb-2">
-          <span className="text-gray-400 text-sm">{label}</span>
-          <span className="font-semibold text-principal text-sm">{valor}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+            {/* CUERPO DEL MODAL (Con scroll si la pantalla es muy pequeña) */}
+            <div className="overflow-y-auto">
+              {resultado?.acceso && resultado?.empleado && (
+                <div className="mb-4">
+                  {/* SECCIÓN DE LA FOTO */}
+                  {resultado.empleado.foto_url ? (
+                    <img 
+                      src={resultado.empleado.foto_url} 
+                      className="w-full h-72 object-cover object-top bg-gray-100"
+                      alt={`Foto de ${resultado.empleado.nombre}`} 
+                    />
+                  ) : (
+                    <div className="w-full h-72 bg-principal flex items-center justify-center text-white text-6xl font-bold">
+                      {resultado.empleado.nombre?.[0] || '?'}{resultado.empleado.apellido_paterno?.[0] || ''}
+                    </div>
+                  )}
+                  
+                  {/* SECCIÓN DE NOMBRE Y ROL */}
+                  <div className="p-4">
+                    <h3 className="font-bold text-principal text-lg leading-tight">
+                      {resultado.empleado.nombre} {resultado.empleado.apellido_paterno} {resultado.empleado.apellido_materno}
+                    </h3>
+                    <span className="inline-block bg-principal text-white text-xs font-bold px-2 py-0.5 rounded-full mt-1 uppercase">
+                      {resultado.empleado.rol}
+                    </span>
+                  </div>
 
-      <div className="px-5 pb-5 flex gap-3">
-        <button onClick={iniciarEscaneo}
-          className="flex-1 bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition">
-          📷 Escanear otro
-        </button>
-        <button onClick={() => setResultado(null)}
-          className="flex-1 border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition">
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+                  {/* SECCIÓN DE DETALLES */}
+                  <div className="px-4 pb-2">
+                    <div className="space-y-3">
+                      {[
+                        { label: 'Número de nómina', valor: resultado.empleado.numero_nomina },
+                        { label: 'Puesto', valor: resultado.empleado.puesto || 'No asignado' },
+                        { label: 'Departamento', valor: resultado.empleado.departamento || 'No asignado' },
+                      ].map(({ label, valor }) => (
+                        <div key={label} className="flex justify-between items-center border-b border-gray-100 pb-2">
+                          <span className="text-gray-400 text-sm">{label}</span>
+                          <span className="font-semibold text-principal text-sm text-right">{valor}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* PIE DEL MODAL: BOTONES */}
+            <div className="p-5 flex gap-3 shrink-0 bg-white border-t border-gray-50">
+              <button 
+                onClick={iniciarEscaneo}
+                className="flex-1 bg-principal text-white font-bold py-3 rounded-xl border-b-2 border-acento hover:opacity-90 transition"
+              >
+                📷 Escanear otro
+              </button>
+              <button 
+                onClick={() => setResultado(null)}
+                className="flex-1 border border-gray-200 text-gray-500 font-bold py-3 rounded-xl hover:bg-gray-50 transition"
+              >
+                Cerrar
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };
