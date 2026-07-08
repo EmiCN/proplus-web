@@ -54,6 +54,7 @@ const PoliciaScanner = () => {
         audioExito.volume = 0.5;
         audioExito.play().catch(() => {});
       } else {
+        // Error
         const audioError = new Audio('data:audio/wav;base64,UklGRl9FAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTtFAACBgH9/f3+AgIB/f3+AgICAgH9/f4CBgYB/f3+AgYGBf39/gIGBgYB/f3+AgYGBgH9/f4CBgYGAf39/gIGBgYB/f39/gYGBgYB/f3+AgYGBgYB/f3+AgYGBgYCAf3+AgICAgYCAf4CAgICBgIB/gICAgoGAgH+AgICCgYCAgICAgYGAgICAgIGBgICAf4CAgYGAgICAgICBgYCAgIB/gICBgYCAgICAgIGAgICAgH+AgIGBgICAgIB/gICBgYCAgICAgIGAgICAgICAgoGAgICAgH+AgIGBgICAgICAgoGAgICAgIB/gICBgYCAgICA');
         audioError.volume = 0.5;
         audioError.play().catch(() => {});
@@ -123,15 +124,15 @@ const PoliciaScanner = () => {
             <div className="overflow-y-auto">
               {resultado?.acceso && resultado?.empleado && (
                 <div className="mb-4">
-                  {/* SECCIÓN DE LA FOTO */}
+                  {/* SECCIÓN DE LA FOTO MODIFICADA A aspect-[3/4] */}
                   {resultado.empleado.foto_url ? (
                     <img 
                       src={resultado.empleado.foto_url} 
-                      className="w-full h-72 object-cover object-top bg-gray-100"
+                      className="w-full aspect-[3/4] object-cover bg-gray-100"
                       alt={`Foto de ${resultado.empleado.nombre}`} 
                     />
                   ) : (
-                    <div className="w-full h-72 bg-principal flex items-center justify-center text-white text-6xl font-bold">
+                    <div className="w-full aspect-[3/4] bg-principal flex items-center justify-center text-white text-6xl font-bold">
                       {resultado.empleado.nombre?.[0] || '?'}{resultado.empleado.apellido_paterno?.[0] || ''}
                     </div>
                   )}

@@ -105,15 +105,15 @@ const AdminScanner = () => {
               {resultado?.acceso && resultado?.empleado && (
                 <div className="mb-4">
                   
-                  {/* SECCIÓN DE LA FOTO */}
+                  {/* SECCIÓN DE LA FOTO MODIFICADA */}
                   {resultado.empleado.foto_url ? (
                     <img 
                       src={resultado.empleado.foto_url} 
-                      className="w-full h-72 object-cover object-top bg-gray-100"
+                      className="w-full aspect-[3/4] object-cover bg-gray-100"
                       alt={`Foto de ${resultado.empleado.nombre}`} 
                     />
                   ) : (
-                    <div className="w-full h-72 bg-principal flex items-center justify-center text-white text-6xl font-bold">
+                    <div className="w-full aspect-[3/4] bg-principal flex items-center justify-center text-white text-6xl font-bold">
                       {resultado.empleado.nombre?.[0] || '?'}{resultado.empleado.apellido_paterno?.[0] || ''}
                     </div>
                   )}
