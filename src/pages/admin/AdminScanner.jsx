@@ -99,39 +99,44 @@ const AdminScanner = () => {
             </div>
 
             {/* Info del empleado */}
-            {resultado.acceso && resultado.empleado && (
-              <div className="p-5">
-                <div className="mb-4">
-                  {resultado.empleado.foto_url
-                    ? <img src={resultado.empleado.foto_url} className="w-full h-40 object-cover object-top" alt="" style={{borderRadius: '0'}} />
-                    : <div className="w-full h-40 bg-principal flex items-center justify-center text-white text-5xl font-bold">
-                        {resultado.empleado.nombre[0]}{resultado.empleado.apellido_paterno[0]}
-                      </div>
-                  }
-                  <div>
-                    <h3 className="font-bold text-principal text-lg leading-tight">
-                      {resultado.empleado.nombre} {resultado.empleado.apellido_paterno} {resultado.empleado.apellido_materno}
-                    </h3>
-                    <span className="inline-block bg-principal text-white text-xs font-bold px-2 py-0.5 rounded-full mt-1 uppercase">
-                      {resultado.empleado.rol}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-                  {[
-                    { label: 'Número de nómina', valor: resultado.empleado.numero_nomina },
-                    { label: 'Puesto', valor: resultado.empleado.puesto || 'No asignado' },
-                    { label: 'Departamento', valor: resultado.empleado.departamento || 'No asignado' },
-                  ].map(({ label, valor }) => (
-                    <div key={label} className="flex justify-between items-center border-b border-gray-100 pb-2">
-                      <span className="text-gray-400 text-sm">{label}</span>
-                      <span className="font-semibold text-principal text-sm">{valor}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {resultado?.acceso && resultado?.empleado && (
+  <div className="mb-4">
+    {resultado.empleado.foto_url
+      ? <img 
+          src={resultado.empleado.foto_url} 
+          className="w-full object-cover object-top"
+          style={{ height: '280px' }}
+          alt="" 
+        />
+      : <div 
+          className="w-full bg-principal flex items-center justify-center text-white text-6xl font-bold"
+          style={{ height: '280px' }}
+        >
+          {resultado.empleado.nombre?.[0] || '?'}{resultado.empleado.apellido_paterno?.[0] || ''}
+        </div>
+    }
+    <div className="p-4">
+      <h3 className="font-bold text-principal text-lg leading-tight">
+        {resultado.empleado.nombre} {resultado.empleado.apellido_paterno} {resultado.empleado.apellido_materno}
+      </h3>
+      <span className="inline-block bg-principal text-white text-xs font-bold px-2 py-0.5 rounded-full mt-1 uppercase">
+        {resultado.empleado.rol}
+      </span>
+    </div>
+    <div className="bg-gray-50 rounded-xl p-4 mx-4 mb-4 space-y-2">
+      {[
+        { label: 'Número de nómina', valor: resultado.empleado.numero_nomina },
+        { label: 'Puesto', valor: resultado.empleado.puesto || 'No asignado' },
+        { label: 'Departamento', valor: resultado.empleado.departamento || 'No asignado' },
+      ].map(({ label, valor }) => (
+        <div key={label} className="flex justify-between items-center border-b border-gray-100 pb-2">
+          <span className="text-gray-400 text-sm">{label}</span>
+          <span className="font-semibold text-principal text-sm">{valor}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
             <div className="px-5 pb-5 flex gap-3">
               <button onClick={iniciarEscaneo}

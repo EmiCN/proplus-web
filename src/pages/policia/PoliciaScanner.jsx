@@ -115,15 +115,20 @@ audioError.play().catch(() => {});
         </div>
       </div>
 
-      {resultado.acceso && resultado.empleado && (
-        <div className="p-5">
-          <div className="mb-4">
-            {resultado.empleado.foto_url
-              ? <img src={resultado.empleado.foto_url} className="w-full h-40 object-cover object-top" alt="" style={{borderRadius: '0'}} />
-              : <div className="w-full h-40 bg-principal flex items-center justify-center text-white text-5xl font-bold">
-                  {resultado.empleado.nombre[0]}{resultado.empleado.apellido_paterno[0]}
-                </div>
-            }
+      {resultado.empleado.foto_url
+  ? <img 
+      src={resultado.empleado.foto_url} 
+      className="w-full object-cover object-top"
+      style={{ height: '280px' }}
+      alt="" 
+    />
+  : <div 
+      className="w-full bg-principal flex items-center justify-center text-white text-6xl font-bold"
+      style={{ height: '280px' }}
+    >
+      {resultado.empleado.nombre?.[0] || '?'}{resultado.empleado.apellido_paterno?.[0] || ''}
+    </div>
+}
             <div>
               <h3 className="font-bold text-principal text-lg leading-tight">
                 {resultado.empleado.nombre} {resultado.empleado.apellido_paterno} {resultado.empleado.apellido_materno}

@@ -218,8 +218,8 @@ const [cargandoQR, setCargandoQR] = useState(false);
     <div key={item.id} className={`bg-white rounded-2xl p-4 shadow-sm border-l-4 border-principal ${!item.activo ? 'opacity-60' : ''}`}>
       <div className="flex items-center gap-3 mb-3">
         {item.foto_url
-          ? <img src={item.foto_url} className="w-12 h-12 rounded-full object-cover" alt="" />
-          : <div className="w-12 h-12 rounded-full bg-principal flex items-center justify-center text-white font-bold text-lg">
+  ? <img src={item.foto_url} className="w-12 h-16 rounded-xl object-cover object-top flex-shrink-0" alt="" />
+  : <div className="w-12 h-16 rounded-xl bg-principal flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
               {item.nombre?.[0] || '?'}{item.apellido_paterno?.[0] || ''}
             </div>
         }
@@ -268,11 +268,11 @@ const [cargandoQR, setCargandoQR] = useState(false);
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm max-h-[90vh] overflow-y-auto">
             <div className="flex flex-col items-center mb-4">
               {usuarioSel.foto_url
-                ? <img src={usuarioSel.foto_url} className="w-24 h-24 rounded-full object-cover mb-3" alt="" />
-                : <div className="w-24 h-24 rounded-full bg-principal flex items-center justify-center text-white text-3xl font-bold mb-3">
-                    {usuarioSel.nombre[0]}{usuarioSel.apellido_paterno[0]}
-                  </div>
-              }
+  ? <img src={usuarioSel.foto_url} className="w-40 h-52 rounded-2xl object-cover object-top mb-3 border-4 border-principal shadow-md" alt="" />
+  : <div className="w-40 h-52 rounded-2xl bg-principal flex items-center justify-center text-white text-5xl font-bold mb-3 border-4 border-principal">
+      {usuarioSel.nombre?.[0] || '?'}{usuarioSel.apellido_paterno?.[0] || ''}
+    </div>
+}
               <h2 className="text-xl font-bold text-principal text-center">{usuarioSel.nombre} {usuarioSel.apellido_paterno} {usuarioSel.apellido_materno}</h2>
               <span className="bg-principal text-white text-xs font-bold px-3 py-1 rounded-full mt-2 uppercase">{usuarioSel.rol}</span>
             </div>
@@ -410,11 +410,11 @@ const [cargandoQR, setCargandoQR] = useState(false);
             <h2 className="text-lg font-bold text-principal mb-4">Nuevo usuario</h2>
             <div className="flex flex-col items-center mb-4">
   {fotoNueva
-    ? <img src={fotoNueva} className="w-24 h-24 rounded-full object-cover mb-2" alt="" />
-    : <div className="w-24 h-24 rounded-full bg-gray-100 border-2 border-dashed border-principal flex items-center justify-center mb-2">
-        <span className="text-principal text-xs text-center">📷 Sin foto</span>
-      </div>
-  }
+  ? <img src={fotoNueva} className="w-28 h-36 rounded-2xl object-cover object-top mb-2 border-2 border-principal" alt="" />
+  : <div className="w-28 h-36 rounded-2xl bg-gray-100 border-2 border-dashed border-principal flex items-center justify-center mb-2">
+      <span className="text-principal text-xs text-center">📷 Sin foto</span>
+    </div>
+}
   <label className="bg-principal text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer hover:opacity-90 transition">
     {fotoNueva ? 'Cambiar foto' : 'Agregar foto'}
     <input type="file" accept="image/*" className="hidden"
