@@ -139,7 +139,7 @@ audioError.play().catch(() => {});
         {resultado.empleado.rol}
       </span>
     </div>
-    <div className="bg-gray-50 rounded-xl p-4 mx-4 mb-4 space-y-2">
+    <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-y-auto" style={{ maxHeight: '90vh' }}>
       {[
         { label: 'Número de nómina', valor: resultado.empleado.numero_nomina },
         { label: 'Puesto', valor: resultado.empleado.puesto || 'No asignado' },
