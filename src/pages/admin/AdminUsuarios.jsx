@@ -213,16 +213,16 @@ const [cargandoQR, setCargandoQR] = useState(false);
       </button>
 
       <div className="space-y-3">
-        {usuariosFiltrados.length === 0 && <p className="text-center text-gray-400 py-10">No hay usuarios que coincidan</p>}
-        {usuariosFiltrados.map(item => (
-          <div key={item.id} className={`bg-white rounded-2xl p-4 shadow-sm border-l-4 border-principal ${!item.activo ? 'opacity-60' : ''}`}>
-            <div className="flex items-center gap-3 mb-3">
-              {usuarioSel.foto_url
-                ? <img src={usuarioSel.foto_url} className="w-32 h-44 rounded-2xl object-cover object-center mb-3 border-4 border-principal" alt="" />
-                : <div className="w-32 h-44 rounded-2xl bg-principal flex items-center justify-center text-white text-4xl font-bold mb-3 border-4 border-principal">
-                    {usuarioSel.nombre[0]}{usuarioSel.apellido_paterno[0]}
-                  </div>
-              }
+  {usuariosFiltrados.length === 0 && <p className="text-center text-gray-400 py-10">No hay usuarios que coincidan</p>}
+  {usuariosFiltrados.map(item => (
+    <div key={item.id} className={`bg-white rounded-2xl p-4 shadow-sm border-l-4 border-principal ${!item.activo ? 'opacity-60' : ''}`}>
+      <div className="flex items-center gap-3 mb-3">
+        {item.foto_url
+          ? <img src={item.foto_url} className="w-12 h-12 rounded-full object-cover" alt="" />
+          : <div className="w-12 h-12 rounded-full bg-principal flex items-center justify-center text-white font-bold text-lg">
+              {item.nombre?.[0] || '?'}{item.apellido_paterno?.[0] || ''}
+            </div>
+        }
               <div className="flex-1">
                 <p className="font-bold text-principal">{item.nombre} {item.apellido_paterno}</p>
                 <p className="text-gray-400 text-xs">Nómina: {item.numero_nomina}</p>
