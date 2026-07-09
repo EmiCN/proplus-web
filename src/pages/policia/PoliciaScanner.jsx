@@ -43,29 +43,57 @@ const PoliciaScanner = () => {
   };
 
   const validarQR = async (token) => {
-    setCargando(true);
-    try {
-      const respuesta = await api.post('/qr/validar', { token });
-      setResultado(respuesta.data);
-      // Sonido según resultado
-      if (respuesta.data.acceso) {
-        // Éxito
-        const audioExito = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2ozLS93v+3aq1gyKS94w/HgqlcuJiZ2v+7lqlcuKCZ0vu3lqlguKCVzu+3mqlguKCR0u+3mqVguKSR0u+3nqFcuKCR0u+3oqFcuKiV0u+7nqFguKiV1u+7nqFguKiZ1u+7nqFguKiZ2u+7nqFcuKiZ2uu7nqFcuKiZ3uu7nqFcuKid3uu7op1cuKid4uu7op1cuKid4uu/oqFcuKid5ue/oqFcuKih5ue/oqFcuKih6ue/oqFcuKil7ue/oqFcuKil8uPDoqFcuKit8uPDop1cuKit9uPDop1cuKit+t/Dopl');
-        audioExito.volume = 0.5;
-        audioExito.play().catch(() => {});
-      } else {
-        // Error
-        const audioError = new Audio('data:audio/wav;base64,UklGRl9FAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTtFAACBgH9/f3+AgIB/f3+AgICAgH9/f4CBgYB/f3+AgYGBf39/gIGBgYB/f3+AgYGBgH9/f4CBgYGAf39/gIGBgYB/f39/gYGBgYB/f3+AgYGBgYB/f3+AgYGBgYCAf3+AgICAgYCAf4CAgICBgIB/gICAgoGAgH+AgICCgYCAgICAgYGAgICAgIGBgICAf4CAgYGAgICAgICBgYCAgIB/gICBgYCAgICAgIGAgICAgH+AgIGBgICAgIB/gICBgYCAgICAgIGAgICAgICAgoGAgICAgH+AgIGBgICAgICAgoGAgICAgIB/gICBgYCAgICA');
-        audioError.volume = 0.5;
-        audioError.play().catch(() => {});
-      }
-    } catch (error) {
-      setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });
-      new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
-    } finally {
-      setCargando(false);
+  setCargando(true);
+  try {
+    const respuesta = await api.post('/qr/validar', { token });
+    setResultado(respuesta.data);
+    if (respuesta.data.acceso) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 1000;
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.15);
+      } catch {}
+    } else {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.value = 300;
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.2);
+      } catch {}
     }
-  };
+  } catch (error) {
+    setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.value = 300;
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+    } catch {}
+  } finally {
+    setCargando(false);
+  }
+};
 
   return (
     <div className="py-4">

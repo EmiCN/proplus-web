@@ -40,23 +40,57 @@ const AdminScanner = () => {
   };
 
   const validarQR = async (token) => {
-    setCargando(true);
-    try {
-      const respuesta = await api.post('/qr/validar', { token });
-      setResultado(respuesta.data);
-      // Sonido según resultado
-      if (respuesta.data.acceso) {
-        new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(() => {});
-      } else {
-        new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
-      }
-    } catch (error) {
-      setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });
-      new Audio('https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3').play().catch(() => {});
-    } finally {
-      setCargando(false);
+  setCargando(true);
+  try {
+    const respuesta = await api.post('/qr/validar', { token });
+    setResultado(respuesta.data);
+    if (respuesta.data.acceso) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 1000;
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.15);
+      } catch {}
+    } else {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.value = 300;
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.2);
+      } catch {}
     }
-  };
+  } catch (error) {
+    setResultado({ acceso: false, mensaje: error.response?.data?.mensaje || 'Error al validar QR' });
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.value = 300;
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+    } catch {}
+  } finally {
+    setCargando(false);
+  }
+};
 
   return (
     <div className="py-4">
